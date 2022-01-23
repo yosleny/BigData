@@ -3,18 +3,28 @@
   <groupId>unical.sparkproject.it</groupId>
   <artifactId>sparkjob</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
    <dependencies>
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-sql_2.11</artifactId>
-            <version>2.3.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.spark</groupId>
-            <artifactId>spark-mllib_2.11</artifactId>
-            <version>2.3.1</version>
-        </dependency>
+   		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-core_2.13</artifactId>
+			<version>3.2.0</version>
+		</dependency>
+       <dependency>
+		    <groupId>org.apache.spark</groupId>
+		    <artifactId>spark-sql_2.13</artifactId>
+		    <version>3.2.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.spark</groupId>
+		    <artifactId>spark-mllib_2.13</artifactId>
+		    <version>3.2.0</version>
+		    <scope>provided</scope>
+		</dependency>
 
     </dependencies>
 </project>
