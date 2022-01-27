@@ -5,12 +5,12 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
 
-public class FilterNullMapper extends Mapper<Object, Text, Text, Text>{
+public class FilterNullMapper extends Mapper<Object, Text, CompositeKey, Text>{
 
 	@Override
-	protected void map(Object key, Text value, Mapper<Object, Text, Text, Text>.Context context)
+	protected void map(Object key, Text value, Mapper<Object, Text, CompositeKey, Text>.Context context)
 			throws IOException, InterruptedException {
-		
+			
 			String[] fields = value.toString().split(",");
 			if(fields.length == 12) {
 									
@@ -32,15 +32,16 @@ public class FilterNullMapper extends Mapper<Object, Text, Text, Text>{
 				
 				String smokingStatus = fields[10];
 				fields[10] = smokingStatus.equals("smokes") || smokingStatus.equals("formerly smoked") ? "1" : "0";
-				    
+				
 				if(!fields[9].equals("N/A")  && (fields[3].equals("1") || fields[5].equals("1"))) {
 			    	
-					context.write(new Text("bmi"), new Text(fields[9]));
+					context.write(new CompositeKey(new Text("1"), 12), new Text(String.join(",", fields)));
 			    }
-				if(fields[9].equals("N/A"))
-					context.write(new Text("bmi"), new Text(String.join(",", fields)));
+				else if(fields[9].equals("N/A"))
+					context.write(new CompositeKey(new Text("r"), 12), new Text(String.join(",", fields)));
 				else
-					context.write(new Text("row"), new Text(String.join(",", fields)));
+					context.write(new CompositeKey(new Text("0"), 12), new Text(String.join(",", fields)));
+
 					
 			}
 		

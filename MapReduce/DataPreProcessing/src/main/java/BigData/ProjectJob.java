@@ -20,15 +20,20 @@ public class ProjectJob {
 			Job j = Job.getInstance(conf,"Filtering");
 			j.setJarByClass(ProjectJob.class);
 			
+			j.setPartitionerClass(KeyPartitioner.class);
+			j.setGroupingComparatorClass(GroupComparator.class);
+			
 			j.setMapperClass(FilterNullMapper.class);
 			j.setCombinerClass(FilterNullCombiner.class);
 			j.setReducerClass(FilterNullReduce.class);
 			
-			j.setMapOutputKeyClass(Text.class);
+			
+			j.setMapOutputKeyClass(CompositeKey.class);
 			j.setMapOutputValueClass(Text.class);
 			
 			FileInputFormat.addInputPath(j, new Path(args[0]));
 		    FileOutputFormat.setOutputPath(j, new Path(args[1]));
+		    
 		    
 			j.waitForCompletion(true);
 			
