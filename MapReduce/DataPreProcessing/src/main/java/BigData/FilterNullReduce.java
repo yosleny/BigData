@@ -12,7 +12,6 @@ public class FilterNullReduce extends Reducer<CompositeKey, Text, Text, Text> {
 	        {
 		
 			double bmi = 0;
-			int count = 0;
 			for (Text val : values) {
 				count++;
 				String[] fields = val.toString().split(",");
@@ -29,6 +28,5 @@ public class FilterNullReduce extends Reducer<CompositeKey, Text, Text, Text> {
 				else
 					context.write(new Text(),  val);
 	        }
-			context.write(new Text("count"),  new Text(Integer.toString(count)));
     }
 }
