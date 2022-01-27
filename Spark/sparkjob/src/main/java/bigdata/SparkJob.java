@@ -25,7 +25,7 @@ public class SparkJob {
         SparkSession spark = SparkSession.builder().appName("StrokePrediction").enableHiveSupport().getOrCreate();
         spark.sparkContext().setLogLevel("WARN");
         
-		Dataset<Row> rows = spark.sql("SELECT gender,age,hypertension,heart_disease,work_type,Residence_type,avg_glucose_level,bmi,smoking_status,stroke from stroke_data");
+		Dataset<Row> rows = spark.sql("SELECT gender,age,hypertension,heart_disease,work_type,Residence_type,avg_glucose_level,bmi,smoking_status,stroke from stroke_data where age>0");
         
 		// Dataset<Row> rows = spark.read().format("csv").option("header","true").load("healthcare-dataset-stroke-data.csv");
         
