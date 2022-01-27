@@ -13,7 +13,6 @@ public class FilterNullReduce extends Reducer<CompositeKey, Text, Text, Text> {
 		
 			double bmi = 0;
 			for (Text val : values) {
-				count++;
 				String[] fields = val.toString().split(",");
 				
 				if(key.toString().equals("r:1") && fields.length == 1)
