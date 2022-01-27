@@ -1,8 +1,10 @@
+
 package bigdata;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.ml.classification.RandomForestClassifier;
 import org.apache.spark.ml.evaluation.MulticlassClassificationEvaluator;
 import org.apache.spark.ml.feature.StringIndexer;
@@ -11,6 +13,7 @@ import org.apache.spark.ml.param.ParamMap;
 import org.apache.spark.ml.tuning.CrossValidator;
 import org.apache.spark.ml.tuning.CrossValidatorModel;
 import org.apache.spark.ml.tuning.ParamGridBuilder;
+import org.apache.spark.mllib.evaluation.MulticlassMetrics;
 
 import static org.apache.spark.sql.functions.col;
 import static org.apache.spark.sql.functions.mean;
@@ -142,8 +145,8 @@ public class SparkJob {
 
        // ParamGrid for Cross Validation
        ParamMap[] rfparamGrid = new ParamGridBuilder()
-                    .addGrid(rf.maxDepth(), new int[] {2, 5, 10, 20})
-                    .addGrid(rf.numTrees(), new int[] {5, 20, 50, 100})
+                    .addGrid(rf.maxDepth(), new int[] {2, 5,10,20})
+                    .addGrid(rf.numTrees(), new int[] {5, 20,40,100})
                     .build();
 
        // 5-fold CrossValidator
@@ -161,10 +164,36 @@ public class SparkJob {
 
        // Use test set here so we can measure the accuracy of our model on new data
        Dataset<Row> rfpredictions = rfcvModel.transform(testDF);
+       rfpredictions=rfpredictions.select(
+       		col("prediction"),
+       		col("stroke").cast(DataTypes.DoubleType)
 
+       		
+       		);;
        // rfcvModel uses the best model found from the Cross Validation       
        // Evaluate best model
-       System.out.println("Accuracy: "+rfevaluator.evaluate(rfpredictions));
+       //System.out.println("Accuracy: "+rfevaluator.evaluate(rfpredictions.javaRDD()));
+       //MulticlassMetrics metrics = new MulticlassMetrics(rfpredictions.toJavaRDD().rdd()));
+      
+       MulticlassMetrics metrics = new MulticlassMetrics(rfpredictions.select("prediction", "stroke"));
+       
+       	
+       // output the Confusion Matrix
+       System.out.println("Confusion Matrix");
+       System.out.println(metrics.confusionMatrix());
+       System.out.println("accuracy");
+       System.out.println(metrics.accuracy());
+       System.out.println("weightedPrecision");
+       System.out.println(metrics.weightedPrecision());
+       System.out.println("weightedRecall");
+       System.out.println(metrics.weightedRecall());
+       System.out.println("weightedFMeasure");
+       System.out.println(metrics.weightedFMeasure());
+       System.out.println("weightedTruePositiveRate");
+       System.out.println(metrics.weightedTruePositiveRate());
+       System.out.println("weightedFalsePositiveRate");
+       System.out.println(metrics.weightedFalsePositiveRate());
+      
        
 	   spark.stop();
 	}
